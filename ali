@@ -1,0 +1,21 @@
+from bark import generate_audio, preload_models
+from scipy.io.wavfile import write
+import numpy as np
+
+# تحميل النماذج
+preload_models()
+
+# نص الشخصية الأولى (رجل)
+text_1 = "أهلاً يا لمياء، هل وصل التقرير الخاص بالبنك؟"
+audio_1 = generate_audio(text_1, history_prompt="v2/ar_speaker_8")
+
+# نص الشخصية الثانية (امرأة)
+text_2 = "نعم يا طويل العمر، التقرير يوضح كافة الرسوم المطلوبة."
+audio_2 = generate_audio(text_2, history_prompt="v2/ar_speaker_1")
+
+# دمج الصوتين في ملف واحد مع صمت قصير بينهما
+silence = np.zeros(int(0.5 * 24000)) # صمت لمدة نصف ثانية
+combined_audio = np.concatenate([audio_1, silence, audio_2])
+
+# حفظ المحادثة كاملة
+write("full_conversation.wav", 24000, combined_audio)
